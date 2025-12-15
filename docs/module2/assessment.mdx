@@ -1,0 +1,50 @@
+---
+sidebar_position: 5
+title: "Module 2 Assessment"
+---
+
+# Module 2 Assessment
+
+This assessment tests your understanding of Digital Twin concepts, Gazebo simulation, sensor simulation, and Unity integration for HRI scenarios.
+
+## Quiz Questions
+
+1. What are the primary differences between Gazebo and Unity in the context of robotics simulation?
+2. Explain the trade-offs between simulation realism and computational efficiency.
+3. How do simulated sensors in Gazebo publish data to ROS 2 topics?
+4. What role does Unity play in Human-Robot Interaction scenarios?
+
+## Practical Exercise
+
+**Task**: Create a simulation environment with a humanoid robot that includes:
+- LiDAR sensor publishing to `/scan` topic
+- Depth camera publishing to `/camera/depth/image_raw`
+- IMU sensor publishing to `/imu/data`
+
+The robot should be able to navigate around objects in the environment and publish sensor data that can be visualized in RViz2.
+
+## Troubleshooting Exercise
+
+Given the following simulation issue:
+- Robot's sensor data shows unusual spikes and inconsistencies
+- Navigation performance is poor in simulation compared to real robot
+
+Diagnose the potential causes and provide solutions.
+
+## Solutions and Evaluation
+
+### Quiz Answers:
+1. Gazebo focuses on physics simulation with accurate dynamics, while Unity provides high-fidelity rendering and HRI capabilities.
+2. Higher realism requires more computational resources but provides better training data; lower efficiency may be acceptable for rapid prototyping.
+3. Gazebo sensors use plugins that bridge sensor data to ROS 2 topics through the `ros_gz` bridge.
+4. Unity provides photorealistic environments and intuitive interfaces for human operators.
+
+### Practical Exercise Solution:
+- Create URDF with appropriate sensor definitions
+- Configure Gazebo plugins for each sensor type
+- Launch RViz2 to visualize the published data
+
+### Troubleshooting Solution:
+- Check noise models and sensor parameters
+- Validate physics parameters against real robot
+- Compare simulation update rates and computational load

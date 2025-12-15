@@ -1,0 +1,14 @@
+<!-- This is a placeholder for the social card image. In a real implementation, this would be a proper image file. -->
+<!-- For now, we'll create a simple text-based placeholder -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#2a4d69"/>
+  <text x="600" y="250" text-anchor="middle" fill="white" font-size="48" font-family="Arial">Robotic Learning Book</text>
+  <text x="600" y="320" text-anchor="middle" fill="#87bdd8" font-size="24" font-family="Arial">Physical AI &amp; Humanoid Robotics Learning Platform</text>
+  <g transform="translate(500, 380)">
+    <rect x="-100" y="-40" width="200" height="80" rx="10" fill="#1a2a6c"/>
+    <circle cx="-50" cy="-15" r="10" fill="#4b86b4"/>
+    <circle cx="50" cy="-15" r="10" fill="#4b86b4"/>
+    <rect x="-70" y="10" width="140" height="30" rx="5" fill="#4b86b4"/>
+    <text x="0" y="30" text-anchor="middle" fill="white" font-size="14" font-family="Arial">ROS 2 • AI • VLA</text>
+  </g>
+</svg>

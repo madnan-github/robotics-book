@@ -1,0 +1,19 @@
+/**
+ * CSS file for DiagramViewer component
+ */
+
+.mermaid-diagram-container {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  overflow-x: auto;
+  background-color: var(--ifm-background-surface-color);
+}
+
+.mermaid-caption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--ifm-color-content-secondary);
+  text-align: center;
+}

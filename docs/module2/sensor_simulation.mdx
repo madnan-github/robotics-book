@@ -1,0 +1,186 @@
+---
+sidebar_position: 3
+title: "Sensor Simulation"
+---
+
+# Sensor Simulation
+
+In this section, we'll configure simulated sensors in Gazebo that publish data to ROS 2 topics, allowing us to work with realistic sensor data without physical hardware.
+
+## LiDAR Simulation
+
+Simulating LiDAR sensors is crucial for navigation and mapping tasks:
+
+```xml
+<!-- In your robot URDF/XACRO -->
+<gazebo reference="laser_link">
+  <sensor name="laser" type="ray">
+    <pose>0 0 0 0 0 0</pose>
+    <visualize>true</visualize>
+    <update_rate>10</update_rate>
+    <ray>
+      <scan>
+        <horizontal>
+          <samples>360</samples>
+          <resolution>1.0</resolution>
+          <min_angle>-3.14159</min_angle>
+          <max_angle>3.14159</max_angle>
+        </horizontal>
+      </scan>
+      <range>
+        <min>0.1</min>
+        <max>30.0</max>
+        <resolution>0.01</resolution>
+      </range>
+    </ray>
+    <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
+      <ros>
+        <namespace>/laser</namespace>
+        <remapping>~/out:=scan</remapping>
+      </ros>
+      <output_type>sensor_msgs/LaserScan</output_type>
+    </plugin>
+  </sensor>
+</gazebo>
+```
+
+## Depth Camera Simulation
+
+Depth cameras provide 3D perception capabilities:
+
+```xml
+<gazebo reference="camera_link">
+  <sensor name="camera" type="depth">
+    <pose>0 0 0 0 0 0</pose>
+    <visualize>true</visualize>
+    <update_rate>30</update_rate>
+    <camera name="head">
+      <horizontal_fov>1.047</horizontal_fov>
+      <image>
+        <format>R8G8B8</format>
+        <width>640</width>
+        <height>480</height>
+      </image>
+      <clip>
+        <near>0.1</near>
+        <far>100</far>
+      </clip>
+    </camera>
+    <plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">
+      <baseline>0.2</baseline>
+      <always_on>true</always_on>
+      <update_rate>30.0</update_rate>
+      <camera_name>camera</camera_name>
+      <image_topic_name>rgb/image_raw</image_topic_name>
+      <depth_image_topic_name>depth/image_raw</depth_image_topic_name>
+      <point_cloud_topic_name>depth/points</point_cloud_topic_name>
+      <camera_info_topic_name>rgb/camera_info</camera_info_topic_name>
+      <depth_image_camera_info_topic_name>depth/camera_info</depth_image_camera_info_topic_name>
+      <point_cloud_cutoff>0.5</point_cloud_cutoff>
+      <point_cloud_cutoff_max>3.0</point_cloud_cutoff_max>
+      <frame_name>camera_depth_optical_frame</frame_name>
+      <baseline>0.1</baseline>
+      <distortion_k1>0.0</distortion_k1>
+      <distortion_k2>0.0</distortion_k2>
+      <distortion_k3>0.0</distortion_k3>
+      <distortion_t1>0.0</distortion_t1>
+      <distortion_t2>0.0</distortion_t2>
+      <point_cloud_transport>raw</point_cloud_transport>
+    </plugin>
+  </sensor>
+</gazebo>
+```
+
+## IMU Simulation
+
+IMU sensors provide orientation and acceleration data:
+
+```xml
+<gazebo reference="imu_link">
+  <sensor name="imu_sensor" type="imu">
+    <always_on>true</always_on>
+    <update_rate>100</update_rate>
+    <visualize>false</visualize>
+    <imu>
+      <angular_velocity>
+        <x>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>2e-4</stddev>
+          </noise>
+        </x>
+        <y>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>2e-4</stddev>
+          </noise>
+        </y>
+        <z>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>2e-4</stddev>
+          </noise>
+        </z>
+      </angular_velocity>
+      <linear_acceleration>
+        <x>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>1.7e-2</stddev>
+          </noise>
+        </x>
+        <y>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>1.7e-2</stddev>
+          </noise>
+        </y>
+        <z>
+          <noise type="gaussian">
+            <mean>0.0</mean>
+            <stddev>1.7e-2</stddev>
+          </noise>
+        </z>
+      </linear_acceleration>
+    </imu>
+    <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+      <ros>
+        <namespace>/imu</namespace>
+        <remapping>~/out:=data</remapping>
+      </ros>
+      <initial_orientation_as_reference>false</initial_orientation_as_reference>
+    </plugin>
+  </sensor>
+</gazebo>
+```
+
+## Visualizing Sensor Data in RViz2
+
+Once sensors are publishing data, you can visualize them in RViz2:
+
+```bash
+# Launch RViz2 to visualize sensor data
+rviz2
+```
+
+In RViz2, add displays for:
+- LaserScan for LiDAR data
+- Image for camera feeds
+- PointCloud2 for depth data
+- Imu for IMU orientation
+
+## Understanding Simulation Realism vs. Efficiency Trade-offs
+
+When configuring sensors, consider these trade-offs:
+
+- **Update Rate**: Higher rates provide more data but consume more CPU
+- **Resolution**: Higher resolution is more realistic but impacts performance
+- **Noise Models**: Adding realistic noise improves training data quality
+- **Range**: Maximum detection range affects planning capabilities
+
+## Best Practices
+
+1. Match sensor parameters to real hardware when possible
+2. Add realistic noise models to improve training transfer
+3. Optimize update rates for your computational constraints
+4. Validate simulated data against real sensor characteristics

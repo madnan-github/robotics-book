@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  ros2-docs:
+    build: .
+    container_name: ros2-module1-docs
+    ports:
+      - "3000:3000"  # Docusaurus default port
+      - "3001:3001"  # Alternative port
+    volumes:
+      - .:/app
+      - /app/node_modules  # Avoid overwriting node_modules
+    environment:
+      - NODE_ENV=development
+      - ROS_DOMAIN_ID=0
+    working_dir: /app
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        cd website &&
+        npm start
+      "
+    stdin_open: true
+    tty: true
+
+  ros2-dev:
+    build: .
+    container_name: ros2-module1-dev
+    volumes:
+      - .:/app
+    environment:
+      - ROS_DOMAIN_ID=0
+    working_dir: /app
+    command: >
+      bash -c "
+        source /opt/ros/humble/setup.bash &&
+        bash
+      "
+    stdin_open: true
+    tty: true

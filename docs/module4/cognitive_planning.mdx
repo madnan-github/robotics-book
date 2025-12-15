@@ -1,0 +1,296 @@
+---
+sidebar_position: 3
+title: "Cognitive Planning with LLMs"
+---
+
+# Cognitive Planning with LLMs
+
+This section covers using Large Language Models (LLMs) for cognitive task decomposition, converting high-level natural language commands into executable ROS 2 action sequences.
+
+## LLM Integration Strategies
+
+There are several approaches to integrate LLMs with robotic systems:
+
+### 1. API-based Approach (OpenAI GPT)
+```python
+import openai
+import json
+
+class LLMBot:
+    def __init__(self, api_key):
+        openai.api_key = api_key
+
+    def decompose_task(self, command, environment_context=None):
+        prompt = f"""
+        You are a robot task planner. Decompose the following high-level command into specific, executable actions.
+
+        Command: "{command}"
+
+        Available actions:
+        - navigate_to_object
+        - grasp_object
+        - release_object
+        - detect_object
+        - move_forward
+        - turn_left
+        - turn_right
+        - stop
+
+        Environment context: {environment_context or "Unknown environment"}
+
+        Return a JSON list of actions with parameters:
+        """
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.1
+        )
+
+        try:
+            # Extract JSON from response
+            content = response.choices[0].message.content
+            # Parse the JSON response
+            actions = json.loads(content)
+            return actions
+        except json.JSONDecodeError:
+            # Fallback if parsing fails
+            return self.parse_text_response(content)
+```
+
+### 2. Local Models (Ollama/Mistral)
+```python
+import requests
+
+class LocalLLM:
+    def __init__(self, endpoint="http://localhost:11434/api/generate"):
+        self.endpoint = endpoint
+
+    def decompose_task(self, command, environment_context=None):
+        prompt = f"""
+        Task: Decompose "{command}" into robot actions.
+
+        Environment: {environment_context or "Unknown"}
+
+        Actions: navigate_to_object, grasp_object, release_object, detect_object, move_forward, turn_left, turn_right, stop
+
+        Output JSON: [{{"action": "...", "params": {{...}}}}]
+        """
+
+        payload = {
+            "model": "mistral",
+            "prompt": prompt,
+            "stream": False
+        }
+
+        response = requests.post(self.endpoint, json=payload)
+        return response.json()
+```
+
+## Task Decomposition System
+
+Creating a complete cognitive planning system:
+
+```python
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+from geometry_msgs.msg import Pose
+import json
+
+class CognitivePlanner(Node):
+    def __init__(self):
+        super().__init__('cognitive_planner')
+
+        # Subscription to voice commands
+        self.command_sub = self.create_subscription(
+            String, '/voice_command', self.command_callback, 10
+        )
+
+        # Publisher for action plans
+        self.plan_pub = self.create_publisher(String, '/action_plan', 10)
+
+        # Publisher for individual actions
+        self.action_pub = self.create_publisher(String, '/robot_action', 10)
+
+        # Initialize LLM client
+        self.llm_client = self.initialize_llm()
+
+        self.get_logger().info("Cognitive Planner initialized")
+
+    def initialize_llm(self):
+        # Initialize based on configuration
+        # Could be API-based or local model
+        pass
+
+    def command_callback(self, msg):
+        command = msg.data
+        self.get_logger().info(f"Received command: {command}")
+
+        # Get environment context (from perception system)
+        env_context = self.get_environment_context()
+
+        # Decompose task using LLM
+        action_plan = self.llm_client.decompose_task(command, env_context)
+
+        # Publish the plan
+        plan_msg = String()
+        plan_msg.data = json.dumps(action_plan)
+        self.plan_pub.publish(plan_msg)
+
+        # Execute the plan
+        self.execute_plan(action_plan)
+
+    def get_environment_context(self):
+        # Get current perception data from the system
+        # This would integrate with perception modules from Module 3
+        context = {
+            "objects_detected": [],  # From perception system
+            "robot_pose": {},        # From localization
+            "navigable_areas": [],   # From mapping
+            "obstacles": []          # From sensor data
+        }
+        return json.dumps(context)
+
+    def execute_plan(self, plan):
+        for action in plan:
+            self.execute_single_action(action)
+            # Wait for action completion before proceeding
+
+    def execute_single_action(self, action):
+        action_msg = String()
+        action_msg.data = json.dumps(action)
+        self.action_pub.publish(action_msg)
+        self.get_logger().info(f"Executing action: {action}")
+```
+
+## Safety Considerations
+
+When using LLMs for robotic action planning, safety is paramount:
+
+```python
+class SafeCognitivePlanner(CognitivePlanner):
+    def __init__(self):
+        super().__init__()
+        self.safety_constraints = [
+            "avoid_humans",
+            "stay_in_boundaries",
+            "avoid_dangerous_objects",
+            "check_for_obstacles"
+        ]
+
+    def decompose_task(self, command, environment_context=None):
+        # Add safety constraints to the prompt
+        safety_prompt = f"""
+        Safety constraints: {', '.join(self.safety_constraints)}
+
+        When decomposing the task, ensure all actions comply with safety constraints.
+        """
+
+        # Include safety constraints in LLM call
+        return super().decompose_task(command, environment_context + safety_prompt)
+
+    def validate_action(self, action):
+        """Validate each action against safety constraints before execution"""
+        # Check if action violates any safety constraints
+        action_type = action.get('action', '')
+
+        if action_type in ['navigate', 'move']:
+            # Verify path is safe before moving
+            if not self.is_path_safe(action.get('params', {})):
+                return False
+
+        return True
+
+    def is_path_safe(self, params):
+        # Check if navigation path is safe
+        # This would integrate with navigation and perception systems
+        return True  # Simplified for example
+```
+
+## Prompt Engineering for Robotics
+
+Effective prompts for robotic task planning:
+
+```python
+class RoboticPromptEngineer:
+    @staticmethod
+    def create_task_decomposition_prompt(command, context):
+        return f"""
+        You are a robotic task planner. Decompose the user command into specific, executable robot actions.
+
+        USER COMMAND: "{command}"
+
+        ENVIRONMENT CONTEXT:
+        {context}
+
+        AVAILABLE ACTIONS:
+        1. navigate_to_object: Move robot to a specific object
+           Parameters: object_name, approach_distance
+        2. grasp_object: Pick up an object
+           Parameters: object_name, grasp_type
+        3. release_object: Place down an object
+           Parameters: location, placement_type
+        4. detect_object: Find objects of a specific type
+           Parameters: object_type, search_area
+        5. move_forward: Move robot forward
+           Parameters: distance
+        6. turn_left/right: Rotate robot
+           Parameters: angle
+        7. wait: Pause execution
+           Parameters: duration
+
+        RULES:
+        - Only use actions from the list above
+        - Include all necessary parameters
+        - Consider robot kinematics and environment constraints
+        - Ensure safety at each step
+        - Break complex tasks into simple actions
+
+        OUTPUT FORMAT: JSON array of action objects with "action" and "params" keys
+
+        ACTIONS:
+        """
+```
+
+## Integration with Perception
+
+Connecting cognitive planning with perception data:
+
+```python
+class IntegratedPlanner(CognitivePlanner):
+    def __init__(self):
+        super().__init__()
+
+        # Subscription to perception data
+        self.perception_sub = self.create_subscription(
+            String, '/perception_data', self.perception_callback, 10
+        )
+
+        self.current_perception = {}
+
+    def perception_callback(self, msg):
+        try:
+            self.current_perception = json.loads(msg.data)
+        except json.JSONDecodeError:
+            self.get_logger().error("Failed to parse perception data")
+
+    def get_environment_context(self):
+        # Combine multiple data sources
+        context = {
+            "objects": self.current_perception.get('objects', []),
+            "robot_pose": self.current_perception.get('robot_pose', {}),
+            "map_data": self.current_perception.get('map_data', {}),
+            "task_history": self.current_perception.get('task_history', [])
+        }
+        return json.dumps(context, indent=2)
+```
+
+## Best Practices
+
+1. **Validation**: Always validate LLM outputs before execution
+2. **Fallbacks**: Implement safe fallback behaviors
+3. **Context**: Provide rich environmental context to LLMs
+4. **Safety**: Implement multiple safety layers
+5. **Monitoring**: Log and monitor all LLM decisions
+6. **Testing**: Extensively test with various commands and scenarios

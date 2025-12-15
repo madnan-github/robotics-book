@@ -1,0 +1,70 @@
+---
+sidebar_position: 5
+title: "Module 4 Assessment"
+---
+
+# Module 4 Assessment
+
+This assessment tests your understanding of Vision-Language-Action integration, voice processing, cognitive planning, and complete pipeline implementation.
+
+## Quiz Questions
+
+1. Explain the three components of the Vision-Language-Action paradigm and how they interact.
+2. What are the main challenges in integrating LLMs with robotic action execution?
+3. How does perception data inform the cognitive planning process?
+4. What safety considerations must be addressed when using LLMs for robot control?
+
+## Practical Exercise
+
+**Task**: Implement a complete VLA pipeline that:
+- Accepts voice commands via Whisper
+- Uses an LLM to decompose complex commands like "Clean the room"
+- Integrates perception data to inform decision-making
+- Executes appropriate ROS 2 actions
+- Includes safety validation for all actions
+
+## VSLAM Output Analysis
+
+Analyze the output from the Isaac ROS VSLAM system and evaluate:
+- Accuracy of pose estimation
+- Quality of the generated map
+- Performance metrics (processing time, etc.)
+- Integration with the VLA planning system
+
+## Navigation Parameter Tuning Exercise
+
+Configure the Nav2 system for the VLA pipeline by:
+- Setting appropriate parameters for LLM-generated navigation goals
+- Configuring recovery behaviors for unexpected situations
+- Testing integration with voice command navigation
+- Evaluating safety during autonomous navigation
+
+## Capstone Project Preparation
+
+Design a complete autonomous humanoid project that integrates:
+- ROS 2 communication from Module 1
+- Simulation capabilities from Module 2
+- Perception and navigation from Module 3
+- Voice and cognitive planning from Module 4
+
+## Solutions and Evaluation
+
+### Quiz Answers:
+1. Vision (perceiving environment) + Language (understanding commands) + Action (executing behaviors) form an integrated system.
+2. Challenges include safety validation, command interpretation accuracy, and real-world execution reliability.
+3. Perception provides environmental context that informs the LLM about available objects, obstacles, and current state.
+4. Safety considerations include action validation, constraint checking, and fallback behaviors.
+
+### Practical Exercise Solution:
+- Implement Whisper-based voice processing
+- Create LLM interface for task decomposition
+- Integrate perception context
+- Add safety validation layer
+- Test with various voice commands
+
+### Evaluation Criteria:
+- Voice command recognition accuracy (>90%)
+- LLM task decomposition success rate (>80%)
+- Safe execution of planned actions
+- Integration with all previous modules
+- Performance and response time metrics

@@ -1,0 +1,164 @@
+---
+sidebar_position: 3
+title: "Isaac ROS: Visual SLAM and GPU Acceleration"
+---
+
+# Isaac ROS: Visual SLAM and GPU Acceleration
+
+Isaac ROS provides hardware-accelerated perception algorithms that leverage NVIDIA GPUs for real-time performance.
+
+## Isaac ROS Overview
+
+Isaac ROS is a collection of hardware-accelerated perception packages that include:
+
+- Visual SLAM (Simultaneous Localization and Mapping)
+- Stereo Disparity
+- Optical Flow
+- Image Pipelines
+- Point Cloud Processing
+
+## Installing Isaac ROS
+
+Isaac ROS is typically deployed using Docker containers:
+
+```bash
+# Pull the Isaac ROS Visual SLAM container
+docker pull nvcr.io/nvidia/isaac-ros/isaac_ros_visual_slam:latest
+
+# Run the container with GPU access
+docker run --gpus all --rm -it \
+  --net=host \
+  nvcr.io/nvidia/isaac-ros/isaac_ros_visual_slam:latest
+```
+
+## Visual SLAM Implementation
+
+Isaac ROS Visual SLAM provides GPU-accelerated VSLAM:
+
+```python
+# Example ROS 2 node using Isaac ROS VSLAM
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Image, CameraInfo
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import PoseStamped
+
+class IsaacVSLAMNode(Node):
+    def __init__(self):
+        super().__init__('isaac_vslam_node')
+
+        # Subscribe to stereo camera topics
+        self.left_image_sub = self.create_subscription(
+            Image,
+            '/camera/left/image_rect_color',
+            self.left_image_callback,
+            10
+        )
+
+        self.right_image_sub = self.create_subscription(
+            Image,
+            '/camera/right/image_rect_color',
+            self.right_image_callback,
+            10
+        )
+
+        self.left_cam_info_sub = self.create_subscription(
+            CameraInfo,
+            '/camera/left/camera_info',
+            self.left_cam_info_callback,
+            10
+        )
+
+        self.right_cam_info_sub = self.create_subscription(
+            CameraInfo,
+            '/camera/right/camera_info',
+            self.right_cam_info_callback,
+            10
+        )
+
+        # Publisher for odometry
+        self.odom_pub = self.create_publisher(Odometry, '/visual_odom', 10)
+
+        # Publisher for pose
+        self.pose_pub = self.create_publisher(PoseStamped, '/visual_pose', 10)
+
+    def left_image_callback(self, msg):
+        # Process left camera image with GPU acceleration
+        pass
+
+    def right_image_callback(self, msg):
+        # Process right camera image with GPU acceleration
+        pass
+
+    def left_cam_info_callback(self, msg):
+        # Process left camera info
+        pass
+
+    def right_cam_info_callback(self, msg):
+        # Process right camera info
+        pass
+
+def main():
+    rclpy.init()
+    vslam_node = IsaacVSLAMNode()
+    rclpy.spin(vslam_node)
+    vslam_node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+
+## GPU-Accelerated Perception Pipelines
+
+Isaac ROS provides several GPU-accelerated perception capabilities:
+
+### Stereo Disparity
+```bash
+# Launch Isaac ROS stereo disparity node
+ros2 launch isaac_ros_stereo_image_proc isaac_ros_stereo_disparity.launch.py
+```
+
+### Optical Flow
+```bash
+# Launch Isaac ROS optical flow node
+ros2 launch isaac_ros_optical_flow optical_flow_node.launch.py
+```
+
+### Point Cloud Processing
+```bash
+# Launch Isaac ROS point cloud processing
+ros2 launch isaac_ros_pointcloud_utils pointcloud_processing.launch.py
+```
+
+## Depth Perception with Isaac ROS
+
+Depth perception is crucial for 3D understanding:
+
+```yaml
+# Example configuration for depth processing
+depth_processing:
+  ros__parameters:
+    input_topic: "/camera/depth/image_rect_raw"
+    output_topic: "/camera/depth/processed"
+    depth_scale: 0.001
+    min_depth: 0.1
+    max_depth: 10.0
+```
+
+## Performance Considerations
+
+Isaac ROS performance depends on:
+
+- **GPU Model**: RTX series provide best performance
+- **CUDA Version**: Match to Isaac ROS requirements
+- **Input Data Rate**: Balance between quality and performance
+- **Algorithm Parameters**: Optimize for your specific use case
+
+## Best Practices
+
+1. **Use Docker**: For consistent Isaac ROS deployment
+2. **Monitor GPU Usage**: Ensure adequate GPU resources
+3. **Optimize Parameters**: Adjust for your specific robot and environment
+4. **Validate Results**: Compare GPU-accelerated results with CPU implementations
+5. **Plan for Fallback**: Implement CPU-based alternatives when needed

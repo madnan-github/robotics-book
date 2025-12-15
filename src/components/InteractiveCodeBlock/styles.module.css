@@ -1,0 +1,32 @@
+/**
+ * CSS file for InteractiveCodeBlock component
+ */
+
+.wrapper {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  overflow: hidden;
+}
+
+.title {
+  padding: 0.5rem 1rem;
+  background-color: var(--ifm-color-emphasis-200);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  color: var(--ifm-color-content-secondary);
+}
+
+.runButton {
+  margin-top: 0.5rem;
+}
+
+.output {
+  margin-top: 0.5rem;
+  padding: 1rem;
+  background-color: var(--ifm-color-emphasis-100);
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.9rem;
+  overflow-x: auto;
+}

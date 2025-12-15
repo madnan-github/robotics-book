@@ -1,0 +1,109 @@
+# OpenAPI Specification for ROS2 Learning Module API
+
+openapi: 3.0.0
+info:
+  title: ROS2 Learning Module API
+  description: API for the ROS2 Module 1 educational content platform
+  version: 1.0.0
+
+paths:
+  /api/module1/progress:
+    get:
+      summary: Get user progress for Module 1
+      responses:
+        '200':
+          description: User progress data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProgress'
+    post:
+      summary: Update user progress for Module 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProgressUpdate'
+      responses:
+        '200':
+          description: Progress updated successfully
+
+  /api/module1/assessments/{assessmentId}/submit:
+    post:
+      summary: Submit an assessment answer
+      parameters:
+        - name: assessmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssessmentSubmission'
+      responses:
+        '200':
+          description: Assessment submitted and graded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentResult'
+
+components:
+  schemas:
+    UserProgress:
+      type: object
+      properties:
+        userId:
+          type: string
+        moduleId:
+          type: string
+        completedSections:
+          type: array
+          items:
+            type: string
+        assessmentScores:
+          type: object
+          additionalProperties:
+            type: number
+        timeSpent:
+          type: number
+        lastAccessed:
+          type: string
+          format: date-time
+
+    UserProgressUpdate:
+      type: object
+      properties:
+        sectionId:
+          type: string
+        completed:
+          type: boolean
+
+    AssessmentSubmission:
+      type: object
+      properties:
+        userId:
+          type: string
+        assessmentId:
+          type: string
+        answer:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    AssessmentResult:
+      type: object
+      properties:
+        assessmentId:
+          type: string
+        isCorrect:
+          type: boolean
+        score:
+          type: number
+        explanation:
+          type: string

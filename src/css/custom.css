@@ -1,0 +1,74 @@
+/**
+ * Custom CSS file for the Robotic Learning Book
+ * Contains custom styles for the educational platform
+ */
+
+/* You can override the default Docusaurus styling here. */
+:root {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-code-font-size: 95%;
+}
+
+/* Add custom styles for educational content */
+.code-block-wrapper {
+  margin: 1rem 0;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  overflow: hidden;
+}
+
+.code-block-title {
+  padding: 0.5rem 1rem;
+  background-color: var(--ifm-color-emphasis-200);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  color: var(--ifm-color-content-secondary);
+}
+
+.code-block-controls {
+  padding: 0.5rem 1rem;
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+.code-block-output {
+  padding: 1rem;
+  background-color: var(--ifm-color-emphasis-100);
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.9rem;
+  overflow-x: auto;
+}
+
+/* Tip admonition styles */
+.tip {
+  border-left: 4px solid var(--ifm-color-success);
+  background-color: rgba(40, 167, 69, 0.1);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Toggle component styles */
+.toggle-container {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.toggle-header {
+  padding: 0.5rem 1rem;
+  background-color: var(--ifm-color-emphasis-200);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.toggle-content {
+  padding: 1rem;
+}

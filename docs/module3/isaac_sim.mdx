@@ -1,0 +1,106 @@
+---
+sidebar_position: 2
+title: "Isaac Sim: Photorealistic Simulation"
+---
+
+# Isaac Sim: Photorealistic Simulation
+
+Isaac Sim provides high-fidelity simulation capabilities for robotics, enabling the generation of synthetic data that closely matches real-world conditions.
+
+## Setting Up Isaac Sim
+
+Isaac Sim can be run in several ways:
+
+1. **Docker Container** (Recommended):
+```bash
+docker run --gpus all -it --rm \
+  --network=host \
+  --volume=$(pwd):/workspace/shared \
+  --env="DISPLAY" \
+  --env="QT_X11_NO_MITSHM=1" \
+  --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+  --privileged \
+  --name isaac_sim \
+  nvcr.io/nvidia/isaac-sim:latest
+```
+
+2. **Isaac Sim Omniverse** for more advanced features
+
+## Creating Photorealistic Environments
+
+Isaac Sim allows for the creation of highly detailed environments:
+
+```python
+# Example Python script for Isaac Sim
+import omni
+from omni.isaac.core import World
+from omni.isaac.core.utils.nucleus import get_assets_root_path
+from omni.isaac.core.utils.stage import add_reference_to_stage
+
+# Initialize the world
+world = World(stage_units_in_meters=1.0)
+
+# Add a robot to the simulation
+asset_root_path = get_assets_root_path()
+carter_path = asset_root_path + "/Isaac/Robots/Carter/carter_nucleus.usd"
+add_reference_to_stage(usd_path=carter_path, prim_path="/World/Carter")
+
+# Reset the world to initialize the simulation
+world.reset()
+```
+
+## Synthetic Data Generation for Perception
+
+Isaac Sim excels at generating synthetic training data:
+
+```python
+# Example: Setting up synthetic data generation
+from omni.isaac.synthetic_utils import SyntheticDataHelper
+
+# Configure synthetic data capture
+synthetic_data = SyntheticDataHelper()
+synthetic_data.set_camera_params(
+    prim_path="/World/Camera",
+    width=640,
+    height=480,
+    fov=1.047  # 60 degrees in radians
+)
+
+# Generate various data types:
+# - RGB images
+# - Depth maps
+# - Semantic segmentation
+# - Instance segmentation
+# - 3D bounding boxes
+```
+
+## Physics Simulation in Isaac Sim
+
+Isaac Sim uses PhysX for physics simulation:
+
+```python
+# Configure physics properties
+from omni.isaac.core.utils.prims import set_targets
+from pxr import UsdPhysics
+
+# Set up rigid body properties
+# Configure collision properties
+# Set up articulation properties for robots
+```
+
+## Best Practices for Photorealistic Simulation
+
+1. **Material Quality**: Use physically-based materials that match real-world properties
+2. **Lighting Conditions**: Match real-world lighting for domain transfer
+3. **Sensor Modeling**: Accurately model sensor characteristics
+4. **Domain Randomization**: Vary environmental parameters to improve robustness
+5. **Annotation Quality**: Ensure accurate ground truth data for training
+
+## Synthetic Data Quality Evaluation
+
+Evaluate synthetic data quality by comparing:
+
+- Visual similarity to real data
+- Performance of models trained on synthetic vs. real data
+- Domain gap metrics
+- Task-specific performance metrics
