@@ -1,55 +1,45 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+Version change: N/A -> 1.0.0
+Modified principles: None (new project constitution)
+Added sections: All principles and sections for the RAG chatbot project
+Removed sections: None
+Templates requiring updates:
+  - ✅ plan-template.md - Confirmed alignment with new principles
+  - ✅ spec-template.md - Confirmed alignment with new principles
+  - ✅ tasks-template.md - Confirmed alignment with new principles
+Follow-up TODOs: None
+-->
+
+# Physical AI & Humanoid Robotics Learning RAG Chatbot Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Production-Ready Backend Architecture
+All backend code MUST be organized within the `backend/` directory. The system MUST use FastAPI for API endpoints to ensure high performance and automatic API documentation. This ensures clean separation of concerns and maintainable code organization.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Strict Technology Stack Compliance
+The system MUST use OpenAI Agents SDK / ChatKit SDK for agent functionality, Gemini model for text generation, Cohere for embeddings, Qdrant Cloud (Free Tier) for vector storage, and Neon Serverless Postgres for relational storage. This ensures compatibility with project requirements and deployment constraints.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Security-First Approach (NON-NEGOTIABLE)
+ALL credentials and secrets MUST be stored in `.env` files with NO hardcoded secrets anywhere in the codebase. This protects sensitive information and enables secure deployment across environments.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. RAG Pipeline Excellence
+The system MUST implement a robust RAG pipeline with full-book and user-selected-text-only retrieval capabilities. The pipeline must refuse answers when context is missing or out of scope, ensuring reliable and accurate responses based only on book content.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. API Standardization
+The system MUST expose async FastAPI endpoints at `/chat`, `/chat/selected-text`, and `/health` with consistent error handling and response formats. This ensures standardized interfaces for frontend integration.
 
-### [PRINCIPLE_6_NAME]
+### VI. Zero Trust Architecture
+No external data sources beyond the book content are allowed. No fine-tuning, web search, or external data integration is permitted. This maintains the integrity of the RAG system's knowledge boundaries.
 
+## Technical Constraints and Standards
+Technology stack requirements: FastAPI, OpenAI Agents SDK, Gemini, Cohere, Qdrant Cloud, Neon Postgres. Deployment must occur on Hugging Face for backend with Vercel frontend integration. Local testing is mandatory before deployment.
 
-[PRINCIPLE__DESCRIPTION]
-
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Workflow and Quality Gates
+All features must be tested locally before deployment. Code reviews must verify compliance with technology stack and security requirements. System integration testing required to validate end-to-end functionality between frontend and backend.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+Constitution supersedes all other practices. All PRs/reviews must verify compliance with technology stack and security requirements. Complexity must be justified with clear performance or reliability benefits.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-12-16 | **Last Amended**: 2025-12-16
