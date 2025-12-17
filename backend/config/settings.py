@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     qdrant_collection_name: str = "book_content"
 
     # Model Settings
-    gemini_model: str = "gemini-pro"
+    gemini_model: str = "gemini-2.5-flash"
     cohere_model: str = "embed-multilingual-v3.0"
 
     class Config:
